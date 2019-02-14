@@ -2,19 +2,24 @@ import Vapor
 
 /// Register your application's routes here.
 public func routes(_ router: Router) throws {
-    // Basic "It works" example
-    router.get { req in
-        return "It works!"
-    }
-    
-    // Basic "Hello, world!" example
-    router.get("hello") { req in
-        return "Hello, world!"
-    }
 
-    // Example of configuring a controller
-    let todoController = TodoController()
-    router.get("todos", use: todoController.index)
-    router.post("todos", use: todoController.create)
-    router.delete("todos", Todo.parameter, use: todoController.delete)
+    // on reference notre BlockchainController
+    let blockchainController = BlockchainController()
+    router.get("hello", use: blockchainController.greet)
+
+    // retourne la blockchain
+    router.get("blockchain", use: blockchainController.getBlockchain)
+
+    // Mine
+    router.post(Transaction.self, at: "mine", use: blockchainController.mine)
+
+    // enregistrer un node
+    router.post([BlockchainNode].self, at: "/nodes/register", use: blockchainController.registerNodes)
+
+    // recuperer un node
+    router.get("/nodes", use: blockchainController.getNodes)
+
+    // resoudre conflit de longueur de chaine
+    router.get("/resolve", use: blockchainController.resolve)
+
 }
